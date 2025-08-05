@@ -5,8 +5,8 @@ import { Link } from "react-router-dom";
 export default function Login() {
   return (
     <div>
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center overflow-hidden">
-        <div className="flex justify-center items-center -mt-18">
+      <div className="bg-gray-100 flex items-center justify-center">
+        <div className="flex justify-center items-center p-15">
           <div className="bg-white w-[500px] h-120 rounded-l-lg">
             <h1 className="text-4xl font-bold text-[#9f3247] pl-13 pt-10">
               Login

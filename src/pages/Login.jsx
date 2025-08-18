@@ -2,7 +2,25 @@ import InputField from "../components/InputBox";
 import CheckBox from "../components/checkBox";
 import Button from "../components/mainButton";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { checkBackendConnection} from "../api/auth"
 export default function Login() {
+
+  
+ useEffect(() => {
+  const verifyBackend = async () => {
+    try {
+      const data = await checkBackendConnection();
+      console.log("Backend status: ", data);
+    } catch (error) {
+      console.error("Backend connection failed:", error);
+      // Add user feedback here (e.g., toast notification)
+    }
+  };
+  verifyBackend();
+}, []);
+
+
   return (
     <div>
       <div className="bg-gray-100 flex items-center justify-center">
@@ -28,7 +46,7 @@ export default function Login() {
             </div>
             <div className="w-[400px] ml-13 mt-5">
               <Button>
-                <p className="-mt-[6px]">Login</p>
+                <p className="-mt-[6px]"><Link to="/dashboard">Login</Link></p>
               </Button>
             </div>
           </div>
@@ -46,7 +64,7 @@ export default function Login() {
                 <p className="text-white text-sm">
                   Don't have an account?{" "}
                   <Link
-                    to="/signup"
+                    to="/register"
                     className="text-white hover:text-gray-200 hover:underline transition-colors duration-200 font-medium"
                   >
                     Sign up here

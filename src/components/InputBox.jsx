@@ -1,61 +1,65 @@
-import { useState } from 'react';
 
-const AreaSelector = () => {
-  const [inputValue, setInputValue] = useState('');
-  const [selectedAreas, setSelectedAreas] = useState([]);
-  const [suggestions, setSuggestions] = useState([
-    'New York', 'London', 'Tokyo', 
-    'Paris', 'Dubai', 'Singapore'
-  ]);
-
-  const handleAddArea = (e) => {
-    if (e.key === 'Enter' && inputValue.trim()) {
-      if (!selectedAreas.includes(inputValue.trim())) {
-        setSelectedAreas([...selectedAreas, inputValue.trim()]);
-      }
-      setInputValue('');
-    }
-  };
-
-  const handleRemoveArea = (areaToRemove) => {
-    setSelectedAreas(selectedAreas.filter(area => area !== areaToRemove));
-  };
-
-  const handleSuggestionClick = (suggestion) => {
-    if (!selectedAreas.includes(suggestion)) {
-      setSelectedAreas([...selectedAreas, suggestion]);
-    }
-    setInputValue('');
-  };
-
+const InputField = ({
+  type = "text",
+  name,
+  label,
+  placeholder,
+  value,
+  onChange,
+  onKeyDown,
+  error,
+  icon,
+  className = "",
+  isTagInput = false,
+  tags = [],
+  onTagRemove,
+  ...props
+}) => {
   return (
-    <div className="w-full max-w-md">
-      {/* Input with label */}
-      <div className="mb-2">
-        <div className="relative mt-1">
-          <input
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={handleAddArea}
-            placeholder="Type and press Enter"
-            className="w-[400px] px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-          />
-        </div>
+    <div className={`w-full max-w-md ${className}`}>
+      {/* Label */}
+      {label && (
+        <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
+          {label}
+        </label>
+      )}
+
+      {/* Input with icon */}
+      <div className="relative mb-2">
+        {icon && (
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            {icon}
+          </div>
+        )}
+        <input
+          type={type}
+          id={name}
+          name={name}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          onKeyDown={onKeyDown}
+          className={`w-[400px] px-4 py-2 border ${
+            error ? "border-red-500" : "border-gray-300"
+          } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 ${
+            icon ? "pl-10" : ""
+          }`}
+          {...props}
+        />
       </div>
 
-      {/* Selected areas tags */}
-      {selectedAreas.length > 0 && (
+      {/* Tags display (only if isTagInput is true) */}
+      {isTagInput && tags.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-3">
-          {selectedAreas.map((area) => (
+          {tags.map((tag) => (
             <span
-              key={area}
+              key={tag}
               className="inline-flex items-center px-3 py-1 rounded-full bg-indigo-100 text-indigo-800 text-sm"
             >
-              {area}
+              {tag}
               <button
                 type="button"
-                onClick={() => handleRemoveArea(area)}
+                onClick={() => onTagRemove(tag)}
                 className="ml-1.5 text-indigo-600 hover:text-indigo-900"
               >
                 &times;
@@ -65,28 +69,10 @@ const AreaSelector = () => {
         </div>
       )}
 
-      {/* Suggestions dropdown */}
-      {inputValue && (
-        <div className="mt-1 border border-gray-200 rounded-md shadow-lg">
-          <ul className="py-1 max-h-60 overflow-auto">
-            {suggestions
-              .filter(suggestion =>
-                suggestion.toLowerCase().includes(inputValue.toLowerCase())
-              )
-              .map((suggestion) => (
-                <li
-                  key={suggestion}
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => handleSuggestionClick(suggestion)}
-                >
-                  {suggestion}
-                </li>
-              ))}
-          </ul>
-        </div>
-      )}
+      {/* Error message */}
+      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
     </div>
   );
 };
 
-export default AreaSelector;
+export default InputField;

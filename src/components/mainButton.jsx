@@ -24,6 +24,8 @@ const MainButton = ({
         active:scale-[0.98]
         disabled:opacity-50 disabled:cursor-not-allowed
         cursor-pointer
+        justify-center items-center
+        flex
       `}
     >
       {children}

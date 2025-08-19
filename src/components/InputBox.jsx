@@ -4,7 +4,7 @@ const InputField = ({
   name,
   label,
   placeholder,
-  value,
+  value="",
   onChange,
   onKeyDown,
   error,

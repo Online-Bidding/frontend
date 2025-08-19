@@ -3,55 +3,88 @@ import CheckBox from "../components/checkBox";
 import Button from "../components/mainButton";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
-import { checkBackendConnection} from "../api/auth"
-export default function Login() {
+import { checkBackendConnection } from "../api/auth"
+import { Form } from "antd";
 
-  
- useEffect(() => {
-  const verifyBackend = async () => {
+
+export default function Login() {
+  const [form] = Form.useForm();
+
+  const handleSubmit = async (values) => {
     try {
-      const data = await checkBackendConnection();
-      console.log("Backend status: ", data);
+      console.log("Success: ", values);
     } catch (error) {
-      console.error("Backend connection failed:", error);
-      // Add user feedback here (e.g., toast notification)
+      console.log("Submision error: ", error);
     }
-  };
-  verifyBackend();
-}, []);
+  }
+
+  useEffect(() => {
+    const verifyBackend = async () => {
+      try {
+        const data = await checkBackendConnection();
+        console.log("Backend status: ", data);
+      } catch (error) {
+        console.error("Backend connection failed:", error);
+        // Add user feedback here (e.g., toast notification)
+      }
+    };
+    verifyBackend();
+  }, []);
 
 
   return (
     <div>
-      <div className="bg-gray-100 flex items-center justify-center">
-        <div className="flex justify-center items-center p-15">
-          <div className="bg-white w-[500px] h-120 rounded-l-lg">
-            <h1 className="text-4xl font-bold text-[#9f3247] pl-13 pt-10">
+      <div className="flex items-center justify-center">
+        <div className="flex justify-center items-center">
+          <div className="bg-white w-[500px] h-[600px] rounded-l-2xl shadow-2xl border border-gray-300 flex flex-col items-center justify-center">
+            <h1 className="text-4xl font-bold text-[#9f3247] mb-10">
               Login
             </h1>
-            <div className="mt-8 ml-13">
-              <label htmlFor="" className="text-gray-600">
-                Email *
-              </label>
-              <InputField />
-            </div>
-            <div className="mt-6 ml-13">
-              <label htmlFor="" className="text-gray-600">
-                Password *
-              </label>
-              <InputField />
-            </div>
-            <div className="mt-6 ml-13">
-              <CheckBox />
-            </div>
-            <div className="w-[400px] ml-13 mt-5">
-              <Button>
-                <p className="-mt-[6px]"><Link to="/dashboard">Login</Link></p>
-              </Button>
+            <div className="w-[400px]">
+              <Form
+                form={form}
+                layout="vertical"
+                onFinish={handleSubmit}
+                onFinishFailed={(errorInfo) => console.log("Fail:", errorInfo)}
+              >
+                <div className="">
+                  <Form.Item
+                    label="Email"
+                    name="email"
+                    rules={[
+                      { required: true, message: "Please enter your email" },
+                      { type: "email", message: "Invalid email" },
+                    ]}
+                    className="mb-6"
+                  >
+                    <InputField placeholder="Enter your email" />
+                  </Form.Item>
+                </div>
+                <div className="">
+                  <Form.Item
+                    label="Password"
+                    name="password"
+                    rules={[
+                      { required: true, message: "Please enter your password!" },
+                    ]}
+                    className="mb-4"
+                  >
+                    <InputField type="password" placeholder="Enter your password" />
+                  </Form.Item>
+                </div>
+                <div className="mt-6">
+                  <CheckBox />
+                </div>
+              </Form>
+              <div className="w-[400px] mt-5">
+                <Button>
+                  <p className="-mt-[6px]"><Link to="/dashboard">Login</Link></p>
+                </Button>
+              </div>
             </div>
           </div>
-          <div className="rounded-r-lg bg-gradient-to-r from-[#7b2334] to-[#9f3247] w-[500px] h-120 flex-col justify-center items-center text-center">
-            <h1 className="text-4xl font-bold text-white mt-40">
+          <div className="rounded-r-2xl bg-gradient-to-r from-[#7b2334] to-[#9f3247] w-[500px] h-[600px] flex flex-col justify-center items-center text-center border border-gray-300 border-l-0 shadow-2xl">
+            <h1 className="text-4xl font-bold text-white">
               Welcome Back!
             </h1>
             <p className="text-white text-sm p-5">

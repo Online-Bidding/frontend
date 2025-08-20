@@ -5,6 +5,7 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import ProductDetails from "../pages/ProductDetails";
 import Dashboard from "../pages/Dashboard"
+import ViewAll from "../pages/ViewAll"
 import Layout from "../layouts/layout";
 
 export default function PublicRoutes() {
@@ -16,7 +17,8 @@ export default function PublicRoutes() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />}/>
-        <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="/viewall" element={<ViewAll />} />
+        <Route path="/viewall/:id" element={<ProductDetails />} />
       </Route>
     </Routes>
   );

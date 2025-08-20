@@ -1,16 +1,22 @@
 import InputField from "../components/InputBox";
 import Button from "../components/mainButton";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Form } from "antd";
+import { Form, Alert } from "antd";
+import { registerUser } from "../api/auth";
 
 export default function Signup() {
   const [form] = Form.useForm();
   const [currentStep, setCurrentStep] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const navigate = useNavigate();
 
   const handleNext = async () => {
     try {
       await form.validateFields(["firstname", "lastname", "email"]);
+      setError(null);
       setCurrentStep(2);
     } catch (error) {
       console.log("Validation error", error);
@@ -18,16 +24,44 @@ export default function Signup() {
   };
 
   const handleSubmit = async (values) => {
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
     try {
-      console.log("Success: ", values);
-      // Add signup logic here
+      const data = await registerUser(values);
+      // console.log("Success: ", data);
+      // console.log("token: ", data.token);
+      // let token = data.token;
+      if (data.token) {
+        setSuccess("Registration successful Redirecting to login...");
+        // Store token if needed 
+        // localStorage.setItem('authToken', data.token);
+
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
+      }
     } catch (error) {
       console.log("Submission error:", error);
+
+      let errorMessage = "Registration failed please try again.";
+
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleBack = () => {
     setCurrentStep(1);
+    setError(null);
   };
 
   return (
@@ -58,6 +92,30 @@ export default function Signup() {
               2
             </div>
           </div>
+
+          {/* Error Alert */}
+          {error && (
+            <div className="w-[400px] mb-4">
+              <Alert
+                message={error}
+                type="error"
+                showIcon
+                closable
+                onClose={() => setError(null)}
+              />
+            </div>
+          )}
+
+          {/* Success Alert */}
+          {success && (
+            <div className="w-[400px] mb-4">
+              <Alert
+                message={success}
+                type="success"
+                showIcon
+              />
+            </div>
+          )}
 
           <Form
             form={form}
@@ -155,11 +213,18 @@ export default function Signup() {
                   type="button"
                   onClick={handleBack}
                   className="bg-gray-300 text-gray-700 hover:bg-gray-400 flex-1"
+                  disabled={loading}
                 >
                   <p className="-mt-[4px]">Back</p>
                 </Button>
-                <Button type="submit" className="flex-1">
-                  <p className="-mt-[4px]">Sign up</p>
+                <Button
+                  type="submit"
+                  className="flex-1"
+                  disabled={loading}
+                >
+                  <p className="-mt-[4px]">
+                    {loading ? "Signing up..." : "Sign up"}
+                  </p>
                 </Button>
               </div>
             </div>

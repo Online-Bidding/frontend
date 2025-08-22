@@ -43,6 +43,9 @@ export default function Login() {
           sessionStorage.setItem('userEmail', values.email);
         }
 
+        // Force trigger storage event for other components to detect
+        window.dispatchEvent(new Event('storage'));
+
         // Redirect after a short delay
         setTimeout(() => {
           navigate("/dashboard");
@@ -102,7 +105,7 @@ export default function Login() {
 
 
   return (
-    
+
     <div>
       {console.log(sessionStorage.getItem("authEmail"))}
       <div className="flex items-center justify-center">
